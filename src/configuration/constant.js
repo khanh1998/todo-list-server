@@ -1,16 +1,17 @@
 import fs from 'fs';
+import path from 'path';
 
 function readJson(fileName) {
   let jsonString = '';
   try {
-    jsonString = fs.readFileSync(fileName);
+    jsonString = fs.readFileSync(path.resolve(fileName));
   } catch (error) {
     console.error(error);
   }
   return JSON.parse(jsonString);
 }
 
-const devConst = readJson(`${__dirname}/dev-constant.json`);
+const devConst = readJson('dev-constant.json');
 
 const development = {
   MONGO_URL: devConst.MONGO_URL,

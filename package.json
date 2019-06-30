@@ -4,9 +4,10 @@
   "description": "Todo list api server",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node -r ./node_modules/dotenv/config ./dist/app.js",
     "develop": "nodemon --delay 5 --exec babel-node src/app.js --require node_modules/dotenv/config",
-    "flow": "flow"
+    "flow": "flow",
+    "build": "babel ./src -d dist"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
   },
   "homepage": "https://github.com/khanh1998/todo-list-server#readme",
   "dependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "babel-eslint": "^10.0.2",
     "bcrypt": "^3.0.6",
@@ -35,8 +38,6 @@
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/node": "^7.4.5",
-    "@types/express": "^4.17.0",
-    "babel-cli": "^6.26.0",
     "babel-preset-flow": "^6.23.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
