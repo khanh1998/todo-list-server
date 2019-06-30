@@ -1,0 +1,47 @@
+{
+  "name": "todo-list-server",
+  "version": "1.0.0",
+  "description": "Todo list api server",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "develop": "nodemon --delay 5 --exec babel-node src/app.js --require node_modules/dotenv/config",
+    "flow": "flow"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khanh1998/todo-list-server.git"
+  },
+  "keywords": [
+    "NodeJS",
+    "Todo",
+    "list"
+  ],
+  "author": "Quoc Khanh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/khanh1998/todo-list-server/issues"
+  },
+  "homepage": "https://github.com/khanh1998/todo-list-server#readme",
+  "dependencies": {
+    "@babel/preset-env": "^7.4.5",
+    "babel-eslint": "^10.0.2",
+    "bcrypt": "^3.0.6",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@types/express": "^4.17.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.18.0",
+    "flow-bin": "^0.102.0",
+    "nodemon": "^1.19.1"
+  }
+}
