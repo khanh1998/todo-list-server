@@ -7,7 +7,7 @@
     "start": "node -r ./node_modules/dotenv/config ./dist/app.js",
     "develop": "nodemon --delay 5 --exec babel-node src/app.js --require node_modules/dotenv/config",
     "flow": "flow",
-    "build": "babel ./src -d dist"
+    "build": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
