@@ -1,13 +1,12 @@
 import models from '../../configuration/loadModel';
 
 const todoListModel = models.TodoList;
-// @flow
 export async function createTodoItem(req, res) {
   const { todoListId } = req.params;
-  let {
-    // eslint-disable-next-line prefer-const
-    title, subTodo, description, note, expireDate, remindTime,
+  const {
+    title, subTodo, description, note,
   } = req.body;
+  let { expireDate, remindTime } = req.body;
   expireDate = Date.parse(expireDate);
   remindTime = Date.parse(remindTime);
   const completed = false;
@@ -20,8 +19,14 @@ export async function createTodoItem(req, res) {
     remindTime,
     completed,
   };
+  // after is processed by Passport authenticate
+  // request object will be added more field
+  // user is one of them, there are still more fields of Passport
+  // user contain all information of the login user
+  const { id } = req.user;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId });
+    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
+
     if (doc) {
       await doc.list.push(todoItem);
       const created = await doc.save();
@@ -41,10 +46,14 @@ export async function createTodoItem(req, res) {
 }
 
 export async function getTodoItem(req, res) {
-  const { todoListId } = req.params;
-  const { todoItemId } = req.params;
+  const { todoListId, todoItemId } = req.params;
+  // after is processed by Passport authenticate
+  // request object will be added more field
+  // user is one of them, there are still more fields of Passport
+  // user contain all information of the login user
+  const { id } = req.user;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId });
+    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
     if (doc) {
       const todoItem = await doc.list.id(todoItemId);
       if (todoItem) {
@@ -71,8 +80,13 @@ export async function getTodoItem(req, res) {
 
 export async function getAllTodoItem(req, res) {
   const { todoListId } = req.params;
+  // after is processed by Passport authenticate
+  // request object will be added more field
+  // user is one of them, there are still more fields of Passport
+  // user contain all information of the login user
+  const { id } = req.user;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId });
+    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
     if (doc) {
       res.status(200).json(doc.list);
     } else {
@@ -90,12 +104,17 @@ export async function getAllTodoItem(req, res) {
 }
 
 export async function deleleTodoItem(req, res) {
-  const { todoListId } = req.params;
-  const { todoItemId } = req.params;
+  const { todoListId, todoItemId } = req.params;
+  // after is processed by Passport authenticate
+  // request object will be added more field
+  // user is one of them, there are still more fields of Passport
+  // user contain all information of the login user
+  const { id } = req.user;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId });
+    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
     if (doc) {
       const todoItem = doc.list.id(todoItemId);
+
       if (todoItem) {
         await doc.list.pop(todoItem);
         await doc.save();
@@ -121,13 +140,18 @@ export async function deleleTodoItem(req, res) {
 }
 
 export async function updateTodoItem(req, res) {
-  const { todoListId } = req.params;
-  const { todoItemId } = req.params;
+  const { todoListId, todoItemId } = req.params;
   const {
     title, subTodo, description, note, expireDate, remindTime, completed,
   } = req.body;
+  // after is processed by Passport authenticate
+  // request object will be added more field
+  // user is one of them, there are still more fields of Passport
+  // user contain all information of the login user
+  const { id } = req.user;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId });
+    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
+
     if (doc) {
       const todoItem = await doc.list.id(todoItemId);
       if (todoItem) {

@@ -1,16 +1,23 @@
 import express from 'express';
 import cors from 'cors';
+import morgan from 'morgan';
+import passportConfigure from './PassportConfiguration';
 import { todoListRoute, todoItemRoute } from '../todolist';
+import { loginRoute, userRoute } from '../user';
 import './MongooseConfiguration';
 
-// @flow
 // eslint-disable-next-line import/prefer-default-export
 export function ConfigureExpress() {
   const app = express();
+  app.use(morgan('dev'));
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  todoListRoute(app);
-  todoItemRoute(app);
+  const passport = passportConfigure();
+  app.use(passport.initialize());
+  loginRoute(app, passport);
+  userRoute(app);
+  todoListRoute(app, passport);
+  todoItemRoute(app, passport);
   return app;
 }

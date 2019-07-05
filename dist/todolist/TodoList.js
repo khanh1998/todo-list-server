@@ -89,11 +89,11 @@ var TodoList = new _mongoose["default"].Schema({
     type: [TodoItem]
   },
   owners: {
-    type: [Onwer] // required: true,
-    // validate: (owner) => {
-    //     return (owner.length > 0);
-    // }
-
+    type: [Onwer],
+    required: [true, 'A to-do list must have at least one owner'],
+    validate: function validate(owners) {
+      return owners.length > 0;
+    }
   },
   name: {
     type: String,

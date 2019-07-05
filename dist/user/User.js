@@ -9,6 +9,8 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 
+var _util = _interopRequireDefault(require("util"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -45,25 +47,22 @@ var User = new _mongoose["default"].Schema({
     type: [_mongoose["default"].SchemaTypes.ObjectId],
     ref: 'TodoList'
   }
-});
-User.pre('save', function hasPassword(next) {
+}); // eslint-disable-next-line func-names
+
+User.pre('save', function (next) {
   var user = this;
 
   if (this.isModified('password') || this.isNew) {
-    _bcrypt["default"].genSalt(10, function (error, salt) {
-      if (error) return next(error);
+    _bcrypt["default"].genSalt(10, function (saltError, salt) {
+      if (saltError) return next(saltError);
 
-      _bcrypt["default"].hash(user.password, salt, function (err, hash) {
-        if (err) return next(error);
+      _bcrypt["default"].hash(user.password, salt, function (hashError, hash) {
+        if (hashError) return next(hashError);
         user.password = hash;
-        return next();
+        next();
       });
-
-      return next();
     });
-  }
-
-  return next();
+  } else return next();
 });
 
 User.methods.comparePassword =

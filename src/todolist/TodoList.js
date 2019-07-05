@@ -81,10 +81,8 @@ const TodoList = new Mongoose.Schema({
   },
   owners: {
     type: [Onwer],
-    // required: true,
-    // validate: (owner) => {
-    //     return (owner.length > 0);
-    // }
+    required: [true, 'A to-do list must have at least one owner'],
+    validate: owners => (owners.length > 0),
   },
   name: {
     type: String,

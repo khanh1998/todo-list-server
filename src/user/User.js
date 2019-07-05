@@ -1,5 +1,6 @@
 import Mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import util from 'util';
 
 const User = new Mongoose.Schema({
   username: {
@@ -33,23 +34,22 @@ const User = new Mongoose.Schema({
   },
 });
 
-User.pre('save', function hasPassword(next) {
+// eslint-disable-next-line func-names
+User.pre('save', function (next) {
   const user = this;
 
   if (this.isModified('password') || this.isNew) {
-    bcrypt.genSalt(10, (error, salt) => {
-      if (error) return next(error);
+    bcrypt.genSalt(10, (saltError, salt) => {
+      if (saltError) return next(saltError);
 
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        if (err) return next(error);
+      bcrypt.hash(user.password, salt, (hashError, hash) => {
+        if (hashError) return next(hashError);
 
         user.password = hash;
-        return next();
+        next();
       });
-      return next();
     });
-  }
-  return next();
+  } else return next();
 });
 
 User.methods.comparePassword = async function compare(password) {
