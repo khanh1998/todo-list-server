@@ -29,7 +29,7 @@ export default (app, passport) => {
       } else {
         res.status(401).json({
           success: false,
-          message: 'Unauthenticated!',
+          message: 'Unregister user!',
         });
       }
     })(req, res, next);
