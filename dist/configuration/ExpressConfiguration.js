@@ -11,6 +11,8 @@ var _cors = _interopRequireDefault(require("cors"));
 
 var _morgan = _interopRequireDefault(require("morgan"));
 
+var _connectFlash = _interopRequireDefault(require("connect-flash"));
+
 var _PassportConfiguration = _interopRequireDefault(require("./PassportConfiguration"));
 
 var _todolist = require("../todolist");
@@ -24,6 +26,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 // eslint-disable-next-line import/prefer-default-export
 function ConfigureExpress() {
   var app = (0, _express["default"])();
+  app.use((0, _connectFlash["default"])());
   app.use((0, _morgan["default"])('dev'));
   app.use((0, _cors["default"])());
   app.use(_express["default"].json());

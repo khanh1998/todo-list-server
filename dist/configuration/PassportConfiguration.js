@@ -104,7 +104,7 @@ function _default() {
               user = _context2.sent;
 
               if (!user) {
-                _context2.next = 10;
+                _context2.next = 12;
                 break;
               }
 
@@ -122,19 +122,30 @@ function _default() {
               return _context2.abrupt("return", done(null, user));
 
             case 10:
-              return _context2.abrupt("return", done(null, false));
+              _context2.next = 13;
+              break;
+
+            case 12:
+              return _context2.abrupt("return", done(null, false, {
+                success: false,
+                message: 'Unregisterd user'
+              }));
 
             case 13:
-              _context2.prev = 13;
+              _context2.next = 18;
+              break;
+
+            case 15:
+              _context2.prev = 15;
               _context2.t0 = _context2["catch"](0);
               return _context2.abrupt("return", done(_context2.t0, false));
 
-            case 16:
+            case 18:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 13]]);
+      }, _callee2, null, [[0, 15]]);
     }));
 
     return function (_x3, _x4, _x5) {

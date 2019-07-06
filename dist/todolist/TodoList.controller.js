@@ -39,7 +39,9 @@ function _getAllTodoLists() {
             // user contain all information of the login user
             id = req.user.id;
             _context.next = 4;
-            return todoListModel.find({});
+            return todoListModel.find({
+              'owners.userId': id
+            });
 
           case 4:
             resultList = _context.sent;
@@ -49,7 +51,7 @@ function _getAllTodoLists() {
               // if not auto add user id to owners list
               list = resultList.filter(function (todo) {
                 return todo.owners.find(function (owner) {
-                  return owner.userId.valueOf() === id;
+                  return owner.userId.valueOf().toString() === id;
                 });
               });
 
@@ -97,7 +99,7 @@ function _getTodoList() {
   _getTodoList = _asyncToGenerator(
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee2(req, res) {
-    var todoListId, id, todoList, isOwner;
+    var todoListId, id, todoList;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -111,30 +113,15 @@ function _getTodoList() {
             _context2.prev = 2;
             _context2.next = 5;
             return todoListModel.findOne({
-              _id: todoListId
+              _id: todoListId,
+              'owners.userId': id
             });
 
           case 5:
             todoList = _context2.sent;
 
             if (todoList) {
-              // check whether the id of user is added to owners list or not
-              // if not auto add user id to owners list
-              // owner.userId is objectId type of Mongoose
-              // id is String type
-              // so cannot use === opearator to compare
-              isOwner = todoList.owners.find(function (owner) {
-                return owner.userId.valueOf() === id;
-              });
-
-              if (!isOwner) {
-                res.status(400).json({
-                  success: false,
-                  message: "Todo list ".concat(todoListId, " is not belong to you")
-                });
-              } else {
-                res.status(200).json(todoList);
-              }
+              res.status(200).json(todoList);
             } else {
               res.status(400).json({
                 success: false,
@@ -193,7 +180,7 @@ function _createTodoList() {
             // if not auto add user id to owners list
 
             hasAddId = owners.find(function (owner) {
-              return owner.userId.valueOf() === id;
+              return owner.userId.valueOf().toString() === id;
             });
             if (!hasAddId) owners.push({
               userId: id
@@ -249,7 +236,7 @@ function _deleteTodoList() {
   _deleteTodoList = _asyncToGenerator(
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee4(req, res) {
-    var todoListId, id, doc, isBelongToUser, onwer, message;
+    var todoListId, id, doc, onwer;
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -263,72 +250,62 @@ function _deleteTodoList() {
             _context4.prev = 2;
             _context4.next = 5;
             return todoListModel.findOne({
-              _id: todoListId
+              _id: todoListId,
+              'owners.userId': id
             });
 
           case 5:
             doc = _context4.sent;
-            // check whether the to-do list belong to the user or not
-            // by check if the owners array has the user id or not
-            isBelongToUser = doc.owners.find(function (owner) {
-              return owner.userId.valueOf() === id;
-            });
 
-            if (!(doc && isBelongToUser)) {
-              _context4.next = 18;
+            if (!doc) {
+              _context4.next = 17;
               break;
             }
 
-            _context4.next = 10;
+            _context4.next = 9;
             return doc.owners.id(id);
 
-          case 10:
+          case 9:
             onwer = _context4.sent;
-            _context4.next = 13;
+            _context4.next = 12;
             return doc.owners.pop(onwer);
 
-          case 13:
-            _context4.next = 15;
+          case 12:
+            _context4.next = 14;
             return doc.save();
 
-          case 15:
+          case 14:
             res.status(200).json({
               success: true,
               message: 'Delete todo list successfully'
             });
-            _context4.next = 20;
+            _context4.next = 18;
             break;
 
-          case 18:
-            if (!isBelongToUser) {
-              message = 'This to-do list is not belong to you';
-            } else {
-              message = 'This todo list is not existed';
-            }
-
+          case 17:
             res.status(400).json({
               success: false,
-              message: message
+              message: 'This todo list is not existed'
             });
 
-          case 20:
-            _context4.next = 25;
+          case 18:
+            _context4.next = 23;
             break;
 
-          case 22:
-            _context4.prev = 22;
+          case 20:
+            _context4.prev = 20;
             _context4.t0 = _context4["catch"](2);
             res.status(500).json({
               success: false,
               message: _context4.t0.message
             });
 
-          case 25:
+          case 23:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[2, 22]]);
+    }, _callee4, null, [[2, 20]]);
   }));
   return _deleteTodoList.apply(this, arguments);
 }
@@ -341,7 +318,7 @@ function _updateTodoList() {
   _updateTodoList = _asyncToGenerator(
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee5(req, res) {
-    var id, todoListId, _req$body2, list, owners, name, description, doc, isBelongToUserBeforeUpdate, updated, isBelongToUserAfterUpdate, message;
+    var id, todoListId, _req$body2, list, owners, name, description, doc, updated, isBelongToUserAfterUpdate;
 
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
@@ -357,21 +334,15 @@ function _updateTodoList() {
             _context5.prev = 3;
             _context5.next = 6;
             return todoListModel.findOne({
-              _id: todoListId
+              _id: todoListId,
+              'owners.userId': id
             });
 
           case 6:
             doc = _context5.sent;
-            // check whether the to-do list is belong to the user or not
-            // checking by examine the owners field of the document get from database
-            // if the to-do list is belong to the user, he can edit the owners list
-            // include delete him from the list
-            isBelongToUserBeforeUpdate = doc.owners.find(function (owner) {
-              return owner.userId.valueOf() === id;
-            });
 
-            if (!(doc && isBelongToUserBeforeUpdate)) {
-              _context5.next = 20;
+            if (!doc) {
+              _context5.next = 19;
               break;
             }
 
@@ -379,15 +350,15 @@ function _updateTodoList() {
             doc.owners = owners;
             doc.name = name;
             doc.description = description;
-            _context5.next = 15;
+            _context5.next = 14;
             return doc.save();
 
-          case 15:
+          case 14:
             updated = _context5.sent;
             // check whether the user had remove himself from the list or not
             // if yes, he cannot receive the updated list any more
             isBelongToUserAfterUpdate = updated.owners.find(function (owner) {
-              return owner.userId.valueOf() === id;
+              return owner.userId.valueOf().toString() === id;
             });
 
             if (isBelongToUserAfterUpdate) {
@@ -399,39 +370,33 @@ function _updateTodoList() {
               });
             }
 
-            _context5.next = 22;
+            _context5.next = 20;
             break;
 
-          case 20:
-            if (!isBelongToUserBeforeUpdate) {
-              message = 'This to-do list is not belong to you';
-            } else {
-              message = 'Your parameter is wrong';
-            }
-
+          case 19:
             res.status(400).json({
               success: false,
-              message: message
+              message: 'Your parameter is wrong'
             });
 
-          case 22:
-            _context5.next = 27;
+          case 20:
+            _context5.next = 25;
             break;
 
-          case 24:
-            _context5.prev = 24;
+          case 22:
+            _context5.prev = 22;
             _context5.t0 = _context5["catch"](3);
             res.status(500).json({
               success: false,
               message: _context5.t0.message
             });
 
-          case 27:
+          case 25:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[3, 24]]);
+    }, _callee5, null, [[3, 22]]);
   }));
   return _updateTodoList.apply(this, arguments);
 }

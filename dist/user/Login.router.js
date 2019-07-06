@@ -73,7 +73,7 @@ var _default = function _default(app, passport) {
               case 16:
                 res.status(401).json({
                   success: false,
-                  message: 'Unauthenticated!'
+                  message: 'Unregister user!'
                 });
 
               case 17:

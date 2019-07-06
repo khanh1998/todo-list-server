@@ -112,13 +112,16 @@ export async function deleleTodoItem(req, res) {
   const { id } = req.user;
   try {
     const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
+    console.log(doc);
+    console.log(typeof doc.id);
+    
     if (doc) {
-      const todoItem = doc.list.id(todoItemId);
-
-      if (todoItem) {
-        await doc.list.pop(todoItem);
+      // const todoItem = doc.list.id(todoItemId);
+      const deleteIndex = doc.list.findIndex(item => item.id.valueOf().toString() === todoItemId);
+      if (deleteIndex > -1) {
+        const deleted = doc.list.splice(deleteIndex, 1);
         await doc.save();
-        res.status(200).json(todoItem);
+        res.status(200).json(deleted);
       } else {
         res.status(400).json({
           success: false,
