@@ -112,9 +112,6 @@ export async function deleleTodoItem(req, res) {
   const { id } = req.user;
   try {
     const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
-    console.log(doc);
-    console.log(typeof doc.id);
-    
     if (doc) {
       // const todoItem = doc.list.id(todoItemId);
       const deleteIndex = doc.list.findIndex(item => item.id.valueOf().toString() === todoItemId);
@@ -145,8 +142,11 @@ export async function deleleTodoItem(req, res) {
 export async function updateTodoItem(req, res) {
   const { todoListId, todoItemId } = req.params;
   const {
-    title, subTodo, description, note, expireDate, remindTime, completed,
+    title, subTodo, description, note, completed,
   } = req.body;
+  let { expireDate, remindTime } = req.body;
+  expireDate = Date.parse(expireDate);
+  remindTime = Date.parse(remindTime);
   // after is processed by Passport authenticate
   // request object will be added more field
   // user is one of them, there are still more fields of Passport
@@ -166,7 +166,7 @@ export async function updateTodoItem(req, res) {
         todoItem.remindTime = remindTime;
         todoItem.completed = completed;
         const updated = await doc.save();
-        res.status(200).json(updated.list[updated.list.length - 1]);
+        res.status(200).json(await updated.list.id(todoItemId));
       } else {
         res.status(400).json({
           success: false,
