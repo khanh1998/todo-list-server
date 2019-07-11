@@ -113,9 +113,12 @@ export async function deleteTodoList(req, res) {
   try {
     const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
     if (doc) {
-      const onwer = await doc.owners.id(id);
-      await doc.owners.pop(onwer);
-      await doc.save();
+      const deleteIndex = doc.owners.findIndex(owner => owner.userId.valueOf().toString() === id);
+      doc.owners.splice(deleteIndex, 1);
+      if (doc.owners.length > 0)
+        await doc.save();
+      else
+        await todoListModel.deleteOne({_id: todoListId});
       res.status(200).json({
         success: true,
         message: 'Delete todo list successfully',
