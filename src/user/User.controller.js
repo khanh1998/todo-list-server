@@ -57,11 +57,15 @@ export async function getUser(req, res) {
 
 export async function updateUser(req, res) {
   try {
-    const { username } = req.params;
+    // after is processed by Passport authenticate
+    // request object will be added more field
+    // user is one of them, there are still more fields of Passport
+    // user contain all information of the login user
+    const { id } = req.user;
     const {
       password, avatar, email,
     } = req.body;
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ _id: id });
     if (user) {
       user.password = password;
       user.avatar = avatar;
