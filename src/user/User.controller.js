@@ -85,3 +85,30 @@ export async function updateUser(req, res) {
     });
   }
 }
+
+export async function deleteUser(req, res) {
+  try {
+    // after is processed by Passport authenticate
+    // request object will be added more field
+    // user is one of them, there are still more fields of Passport
+    // user contain all information of the login user
+    const { id } = req.user;
+    const user = await UserModel.deleteOne({ _id: id });
+    if (user) {
+      res.status(200).json({
+        success: true,
+        message: 'Delete user successfully',
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Cannot delete user information',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}

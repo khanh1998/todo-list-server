@@ -18,7 +18,7 @@ export function ConfigureExpress() {
   const passport = passportConfigure();
   app.use(passport.initialize());
   loginRoute(app, passport);
-  userRoute(app);
+  userRoute(app, passport);
   todoListRoute(app, passport);
   todoItemRoute(app, passport);
   return app;
