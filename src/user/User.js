@@ -19,12 +19,16 @@ const User = new Mongoose.Schema({
     required: true,
   },
   email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: (email) => {
-      const re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b/;
-      return re.test(String(email).toLowerCase());
+    type: [String, 'Type of email is string'],
+    required: [true, 'Email is required'],
+    unique: [true, 'Email must not be used'],
+    validate: {
+      isAsync: false,
+      validator: (email) => {
+        const re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b/;
+        return re.test(String(email).toLowerCase());
+      },
+      message: 'Email is not valid',
     },
   },
   todoLists: {

@@ -37,12 +37,11 @@ export default function () {
         if (matchPassword) {
           return done(null, user);
         }
-      } else {
-        return done(null, false, {
-          success: false,
-          message: 'Unregisterd user',
-        });
       }
+      return done(null, false, {
+        success: false,
+        message: 'Unregisterd user',
+      });
     } catch (error) {
       return done(error, false);
     }
