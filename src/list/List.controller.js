@@ -1,19 +1,20 @@
-import models from '../configuration/loadModel';
+import models from '../configuration/Models';
 
-const todoListModel = models.TodoList;
+const listModel = models.List;
 
-export async function getAllTodoLists(req, res) {
+export async function getAllLists(req, res) {
   try {
     // after is processed by Passport authenticate
     // request object will be added more field
     // user is one of them, there are still more fields of Passport
     // user contain all information of the login user
     const { id } = req.user;
-    const resultList = await todoListModel.find({ 'owners.userId': id });
+    const resultList = await listModel.find({ 'members.id': id });
     if (resultList) {
       // check whether the id of user is added to owners list or not
       // if not auto add user id to owners list
-      const list = resultList.filter(todo => todo.owners.find(owner => owner.userId.valueOf().toString() === id));
+      const list = resultList
+        .filter(todo => todo.members.find(member => member.id.valueOf().toString() === id));
       if (!list) {
         res.status(401).json({
           success: false,
@@ -25,7 +26,7 @@ export async function getAllTodoLists(req, res) {
     } else {
       res.status(400).json({
         success: false,
-        message: 'There is no TodoList',
+        message: 'There is no List',
       });
     }
   } catch (error) {
@@ -36,21 +37,21 @@ export async function getAllTodoLists(req, res) {
   }
 }
 
-export async function getTodoList(req, res) {
-  const { todoListId } = req.params;
+export async function getList(req, res) {
+  const { listId } = req.params;
   // after is processed by Passport authenticate
   // request object will be added more field
   // user is one of them, there are still more fields of Passport
   // user contain all information of the login user
   const { id } = req.user;
   try {
-    const todoList = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
+    const todoList = await listModel.findOne({ _id: listId, 'members.id': id });
     if (todoList) {
       res.status(200).json(todoList);
     } else {
       res.status(400).json({
         success: false,
-        message: `Todo list ${todoListId} is not existed`,
+        message: `Todo list ${listId} is not existed`,
       });
     }
   } catch (error) {
@@ -61,32 +62,45 @@ export async function getTodoList(req, res) {
   }
 }
 
-export async function createTodoList(req, res) {
+export async function createList(req, res) {
   // after is processed by Passport authenticate
   // request object will be added more field
   // user is one of them, there are still more fields of Passport
   // user contain all information of the login user
   const { id } = req.user;
   const {
-    list, owners, name, description,
+    tasks, name, description,
   } = req.body;
 
-  // the expireDate and remindTime are String type when the server receive it
-  // we need to parse these field to Date type
-  list.forEach((todo) => {
-    const t = todo;
-    t.expireDate = Date.parse(t.expireDate);
-    t.remindTime = Date.parse(t.remindTime);
+  tasks.forEach((task) => {
+    const t = task;
+    t.lastModified = {};
+    t.created = {};
+    t.created.time = Date.now();
+    t.created.creator = id;
+    t.steps.forEach((step) => {
+      const s = step;
+      s.lastModified = {};
+      s.created = {};
+      s.created.time = Date.now();
+      s.created.creator = id;
+    });
   });
-  // check whether the id of user is added to owners list or not
-  // if not auto add user id to owners list
-  const hasAddId = owners.find(owner => owner.userId.valueOf().toString() === id);
-  if (!hasAddId) owners.push({ userId: id });
-  const todoList = {
-    list, owners, name, description,
+  const created = {
+    time: Date.now(),
+    creator: id,
+  };
+  const isShare = false;
+  const shareToken = '';
+  const members = [{ id }];
+  const lastModified = {};
+  const list = {
+    tasks, members, name, description, created, isShare, shareToken, lastModified,
   };
   try {
-    const doc = await todoListModel.create(todoList);
+    console.log(JSON.stringify(list));
+    const newList = new listModel(list);
+    const doc = await listModel.create(list);
     if (doc) {
       res.status(200).json(doc);
     } else {
@@ -103,30 +117,39 @@ export async function createTodoList(req, res) {
   }
 }
 
-export async function deleteTodoList(req, res) {
-  const { todoListId } = req.params;
+export async function deleteList(req, res) {
+  const { listId } = req.params;
   // after is processed by Passport authenticate
   // request object will be added more field
   // user is one of them, there are still more fields of Passport
   // user contain all information of the login user
   const { id } = req.user;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
+    const doc = await listModel.findOne({ _id: listId, 'members.id': id });
     if (doc) {
-      const deleteIndex = doc.owners.findIndex(owner => owner.userId.valueOf().toString() === id);
-      doc.owners.splice(deleteIndex, 1);
-      if (doc.owners.length > 0)
-        await doc.save();
-      else
-        await todoListModel.deleteOne({_id: todoListId});
-      res.status(200).json({
-        success: true,
-        message: 'Delete todo list successfully',
-      });
+      let deleted;
+      if (doc.created.creator.valueOf().toString() === id) { // if user is the creator of list
+        deleted = await listModel.deleteOne({ _id: listId });
+      } else { // if user is member of list and want to leave the list
+        const deleteIndex = doc.members.findIndex(member => member.id.valueOf().toString() === id);
+        doc.members.splice(deleteIndex, 1);
+        deleted = await doc.save();
+      }
+      if (deleted) {
+        res.status(200).json({
+          success: true,
+          message: `Delete list ${doc.name} successfully`,
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: 'Cannot save the change to database',
+        });
+      }
     } else {
       res.status(400).json({
         success: false,
-        message: 'This todo list is not existed',
+        message: `The list whose id is ${listId} is not existed`,
       });
     }
   } catch (error) {
@@ -137,33 +160,31 @@ export async function deleteTodoList(req, res) {
   }
 }
 
-export async function updateTodoList(req, res) {
+export async function updateList(req, res) {
   // after is processed by Passport authenticate
   // request object will be added more field
   // user is one of them, there are still more fields of Passport
   // user contain all information of the login user
   const { id } = req.user;
-  const { todoListId } = req.params;
+  const { listId } = req.params;
   const {
-    list, owners, name, description,
+    name, description,
   } = req.body;
   try {
-    const doc = await todoListModel.findOne({ _id: todoListId, 'owners.userId': id });
+    const doc = await listModel.findOne({ _id: listId, 'members.id': id });
     if (doc) {
-      doc.list = list;
-      doc.owners = owners;
-      doc.name = name;
-      doc.description = description;
+      doc.set('name', name);
+      doc.set('description', description);
+      doc.set('lastModified.time', Date.now());
+      doc.set('lastModified.modifier', id);
       const updated = await doc.save();
-      // check whether the user had remove himself from the list or not
-      // if yes, he cannot receive the updated list any more
-      const isBelongToUserAfterUpdate = updated.owners.find(owner => owner.userId.valueOf().toString() === id);
-      if (isBelongToUserAfterUpdate) {
+
+      if (updated) {
         res.status(200).json(updated);
       } else {
-        res.status(200).json({
-          success: true,
-          message: 'Update successfully, You now cannot access to the to-do list any more',
+        res.status(500).json({
+          success: false,
+          message: 'Cannot save changes to database',
         });
       }
     } else {

@@ -1,6 +1,6 @@
 import {
-  createTodoList, deleteTodoList, getAllTodoLists, getTodoList, updateTodoList,
-} from './TodoList.controller';
+  createList, deleteList, getAllLists, getList, updateList,
+} from './List.controller';
 
 // eslint-disable-next-line import/prefer-default-export
 export const todoListRoute = (app, passport) => {
@@ -18,9 +18,9 @@ export const todoListRoute = (app, passport) => {
       }
     })(req, res, next);
   };
-  app.get('/todolists', authenticate, getAllTodoLists);
-  app.get('/todolist/:todoListId', authenticate, getTodoList);
-  app.post('/todolist', authenticate, createTodoList);
-  app.put('/todolist/:todoListId', authenticate, updateTodoList);
-  app.delete('/todolist/:todoListId', authenticate, deleteTodoList);
+  app.get('/list', authenticate, getAllLists);
+  app.get('/list/:listId', authenticate, getList);
+  app.post('/list', authenticate, createList);
+  app.patch('/list/:listId', authenticate, updateList);
+  app.delete('/list/:listId', authenticate, deleteList);
 };

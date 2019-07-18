@@ -1,7 +1,7 @@
 import Passport from 'passport';
 import { ExtractJwt, Strategy as JWTStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
-import models from './loadModel';
+import models from './Models';
 
 const options = {
   secretOrKey: process.env.SECRET,

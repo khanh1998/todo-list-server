@@ -1,21 +1,27 @@
-import models from '../configuration/loadModel';
+import models from '../configuration/Models';
 
 const UserModel = models.User;
 
 export async function createUser(req, res) {
   try {
     const {
-      username, password, avatar, email,
+      username, password, avatar, email, biography,
     } = req.body;
     const user = {
-      username, password, avatar, email,
+      username, password, avatar, email, biography,
     };
     const isExistedUsername = await UserModel.findOne({ username });
     if (!isExistedUsername) {
-      const newUser = new UserModel(user);
-      const created = await newUser.save();
+      const created = await UserModel.create(user);
       if (created) {
-        res.status(200).json(created);
+        res.status(200).json(created.toObject({
+          versionKey: false,
+          transform: (doc, ret) => {
+            const $ret = ret;
+            delete $ret.password;
+            return $ret;
+          },
+        }));
       } else {
         res.status(400).json({
           success: false,
@@ -40,7 +46,14 @@ export async function getUser(req, res) {
     const { username } = req.params;
     const user = await UserModel.findOne({ username });
     if (user) {
-      res.status(200).json(user);
+      res.status(200).json(user.toObject({
+        versionKey: false,
+        transform: (doc, ret) => {
+          const $ret = ret;
+          delete $ret.password;
+          return $ret;
+        },
+      }));
     } else {
       res.status(400).json({
         success: false,
@@ -63,15 +76,23 @@ export async function updateUser(req, res) {
     // user contain all information of the login user
     const { id } = req.user;
     const {
-      password, avatar, email,
+      password, avatar, email, biography,
     } = req.body;
     const user = await UserModel.findOne({ _id: id });
     if (user) {
-      user.password = password;
-      user.avatar = avatar;
-      user.email = email;
+      user.set('password', password);
+      user.set('avatar', avatar);
+      user.set('email', email);
+      user.set('biography', biography);
       const updated = await user.save();
-      res.status(200).json(updated);
+      res.status(200).json(updated.toObject({
+        versionKey: false,
+        transform: (doc, ret) => {
+          const $ret = ret;
+          delete $ret.password;
+          return $ret;
+        },
+      }));
     } else {
       res.status(400).json({
         success: false,

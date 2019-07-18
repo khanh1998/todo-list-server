@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import Mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -6,9 +7,12 @@ const User = new Mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate: (username) => {
-      const re = /^[a-zA-Z0-9]+$/;
-      return re.test(username);
+    validate: {
+      validator: (username) => {
+        const re = /^[a-zA-Z0-9]+$/;
+        return re.test(username);
+      },
+      message: 'Username must only contain a-z A-Z and 0-9',
     },
   },
   avatar: {
@@ -19,7 +23,7 @@ const User = new Mongoose.Schema({
     required: true,
   },
   email: {
-    type: [String, 'Type of email is string'],
+    type: String,
     required: [true, 'Email is required'],
     unique: [true, 'Email must not be used'],
     validate: {
@@ -31,16 +35,15 @@ const User = new Mongoose.Schema({
       message: 'Email is not valid',
     },
   },
-  todoLists: {
-    type: [Mongoose.SchemaTypes.ObjectId],
-    ref: 'TodoList',
+  biography: {
+    type: String,
+    maxlength: [140, 'Maximum length of biography is 140 characters'],
   },
 });
 
 // eslint-disable-next-line func-names
 User.pre('save', function (next) {
   const user = this;
-
   if (this.isModified('password') || this.isNew) {
     bcrypt.genSalt(10, (saltError, salt) => {
       if (saltError) return next(saltError);

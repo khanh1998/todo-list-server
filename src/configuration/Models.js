@@ -1,9 +1,9 @@
 import UserModel from '../user/User';
-import TodoListModel from '../todolist/TodoList';
+import ListModel from '../list/List';
 
 const modelInstances = {
   User: UserModel,
-  TodoList: TodoListModel,
+  List: ListModel,
 };
 
 export default modelInstances;

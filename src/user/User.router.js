@@ -1,4 +1,6 @@
-import { createUser, getUser, updateUser, deleteUser } from './User.controller';
+import {
+  createUser, getUser, updateUser, deleteUser,
+} from './User.controller';
 
 export default (app, passport) => {
   const authenticate = (req, res, next) => {
