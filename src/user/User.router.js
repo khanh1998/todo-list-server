@@ -19,6 +19,6 @@ export default (app, passport) => {
   };
   app.post('/user', createUser);
   app.get('/user/:username', getUser);
-  app.put('/user/', authenticate, updateUser);
+  app.patch('/user/', authenticate, updateUser);
   app.delete('/user/', authenticate, deleteUser);
 };

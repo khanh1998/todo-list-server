@@ -1,6 +1,39 @@
 ## **To-do list API**
 This is an API help you maintain a to-do list
 You can create a list, add task to list and then create steps of new task
+
+## #User
+
+ - [ ] GET /user/{ user-id }
+
+Get information of a specific user
+
+ - [ ] POST /user
+
+Create new user
+
+> {
+>     "username": "username",
+>     "password": "password",
+>     "email": "Email@gmail.com",
+>     "avatar": "http://avatar.com/avatar.jpg",
+>     "biography": "this is the biography" 
+>     }
+
+ - [ ] PATCH /user/{ user-id }
+
+Update user's information
+
+> {
+>     "password": "password",
+>     "email": "Email@gmail.com",
+>     "avatar": "http://avatar.com/avatar.jpg",
+>     "biography": "this is the biography" 
+>     }
+
+ - [ ] DELETE /user/{ user-id }
+
+Delete a specific user
 ## #List
 
  - [ ] GET /list
@@ -99,5 +132,3 @@ Update information of a task which belong to a specific list
 
  - [ ] DELETE /list/{ list-id }/task/{ task-id }
 Delete a task of a specific list
-
-
