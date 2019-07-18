@@ -72,20 +72,6 @@ export async function createList(req, res) {
     tasks, name, description,
   } = req.body;
 
-  tasks.forEach((task) => {
-    const t = task;
-    t.lastModified = {};
-    t.created = {};
-    t.created.time = Date.now();
-    t.created.creator = id;
-    t.steps.forEach((step) => {
-      const s = step;
-      s.lastModified = {};
-      s.created = {};
-      s.created.time = Date.now();
-      s.created.creator = id;
-    });
-  });
   const created = {
     time: Date.now(),
     creator: id,
@@ -99,7 +85,6 @@ export async function createList(req, res) {
   };
   try {
     console.log(JSON.stringify(list));
-    const newList = new listModel(list);
     const doc = await listModel.create(list);
     if (doc) {
       res.status(200).json(doc);

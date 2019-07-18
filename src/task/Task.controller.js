@@ -12,10 +12,6 @@ export async function createTask(req, res) {
     name, steps, description, note, expirationTime, remindingTime, priority, repeat,
   } = req.body;
   const completed = false;
-  const created = {
-    time: Date.now(),
-    creator: id,
-  };
   const task = {
     name,
     steps,
@@ -26,7 +22,6 @@ export async function createTask(req, res) {
     completed,
     priority,
     repeat,
-    created,
   };
 
   try {
@@ -153,13 +148,10 @@ export async function updateTask(req, res) {
   const {
     steps, name, description, note, completed, expirationTime, remindingTime, priority, repeat,
   } = req.body;
-  const lastModified = {
-    time: Date.now(),
-    modifier: id,
-  };
   try {
     const list = await listModel.findOne({ _id: listId, 'members.id': id });
-
+    list.set('lastModified.time', Date.now());
+    list.set('lastModified.modifier', id);
     if (list) {
       const task = await list.tasks.id(taskId);
       if (task) {
@@ -172,7 +164,6 @@ export async function updateTask(req, res) {
         task.set('remindingTime', remindingTime);
         task.set('priority', priority);
         task.set('repeat', repeat);
-        task.set('lastModified', lastModified);
         const updatedList = await list.save();
         res.status(200).json(await updatedList.tasks.id(taskId));
       } else {

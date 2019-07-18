@@ -63,20 +63,6 @@ const Task = new Mongoose.Schema({
       msg: 'Repeat data is not right',
     },
   },
-  created: {
-    time: {
-      type: Number,
-      required: true,
-    },
-    location: {
-      type: String,
-    },
-    creator: {
-      type: Mongoose.SchemaTypes.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-  },
 });
 
 function callback(next) {
