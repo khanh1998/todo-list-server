@@ -37,6 +37,7 @@ export default function () {
         if (matchPassword) {
           return done(null, user);
         }
+        return done(null, false);
       }
       return done(null, false, {
         success: false,
