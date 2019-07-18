@@ -12,23 +12,23 @@ Get information of a specific user
 
 Create new user
 
-> {
->     "username": "username",
->     "password": "password",
->     "email": "Email@gmail.com",
->     "avatar": "http://avatar.com/avatar.jpg",
->     "biography": "this is the biography" 
+>     {
+>         "username": "username",
+>         "password": "password",
+>         "email": "Email@gmail.com",
+>         "avatar": "http://avatar.com/avatar.jpg",
+>         "biography": "this is the biography" 
 >     }
 
  - [ ] PATCH /user/{ user-id }
 
 Update user's information
 
-> {
->     "password": "password",
->     "email": "Email@gmail.com",
->     "avatar": "http://avatar.com/avatar.jpg",
->     "biography": "this is the biography" 
+>     {
+>         "password": "password",
+>         "email": "Email@gmail.com",
+>         "avatar": "http://avatar.com/avatar.jpg",
+>         "biography": "this is the biography" 
 >     }
 
  - [ ] DELETE /user/{ user-id }
@@ -71,10 +71,10 @@ JSON request body
  - [ ] PATCH /list/{ list-id }
  Update list's information
 
-> {
->     "name": "chatting with 3 best friends",
->     "description": "chatting with 3 best friends"  
-> }
+>     {
+>         "name": "chatting with 3 best friends",
+>         "description": "chatting with 3 best friends"   
+>     }
 
  - [ ] DELETE /list/{ list-id }
 
@@ -87,47 +87,47 @@ JSON request body
  - [ ] POST /list/{ list-id }/task
  Create a new task and add to a list
 
-> {
->     "completed": false,
->     "steps": [
->         {
->             "completed": false,
->             "name": "chatting with best friends"
->         },
->         {
->             "completed": false,
->             "name": "chatting with best friends"
->         }
->     ],
->     "name": "chatting with best friends",
->     "description": "chatting with best friends",
->     "note": "chatting with best friends",
->     "expirationTime": 1519211810362,
->     "remindingTime": 1519211809934,
->     "priority": 4 
+>     {
+>         "completed": false,
+>         "steps": [
+>             {
+>                 "completed": false,
+>                 "name": "chatting with best friends"
+>             },
+>             {
+>                 "completed": false,
+>                 "name": "chatting with best friends"
+>             }
+>         ],
+>         "name": "chatting with best friends",
+>         "description": "chatting with best friends",
+>         "note": "chatting with best friends",
+>         "expirationTime": 1519211810362,
+>         "remindingTime": 1519211809934,
+>         "priority": 4 
 >     }
 
  - [ ] PUT /list/{ list-id }/task/{ task-id }
 Update information of a task which belong to a specific list
 
-> {
->     "completed": false,
->     "steps": [
->         {
->             "completed": false,
->             "name": "chatting with best friends"
->         },
->         {
->             "completed": false,
->             "name": "chatting with best friends"
->         }
->     ],
->     "name": "chatting with best friends",
->     "description": "chatting with best friends",
->     "note": "chatting with best friends",
->     "expirationTime": 1519211810362,
->     "remindingTime": 1519211809934,
->     "priority": 4 
+>     {
+>         "completed": false,
+>         "steps": [
+>             {
+>                 "completed": false,
+>                 "name": "chatting with best friends"
+>             },
+>             {
+>                 "completed": false,
+>                 "name": "chatting with best friends"
+>             }
+>         ],
+>         "name": "chatting with best friends",
+>         "description": "chatting with best friends",
+>         "note": "chatting with best friends",
+>         "expirationTime": 1519211810362,
+>         "remindingTime": 1519211809934,
+>         "priority": 4  
 >     }
 
  - [ ] DELETE /list/{ list-id }/task/{ task-id }
