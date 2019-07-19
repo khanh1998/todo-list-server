@@ -63,5 +63,4 @@ const List = new Mongoose.Schema({
     },
   },
 });
-
 export default Mongoose.model('TodoList', List);

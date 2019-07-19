@@ -74,5 +74,4 @@ function callback(next) {
 }
 
 Task.pre('save', callback);
-
 export default Task;

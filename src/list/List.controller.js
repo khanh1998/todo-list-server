@@ -9,20 +9,12 @@ export async function getAllLists(req, res) {
     // user is one of them, there are still more fields of Passport
     // user contain all information of the login user
     const { id } = req.user;
-    const resultList = await listModel.find({ 'members.id': id });
+    let resultList = await listModel.find({ 'members.id': id });
     if (resultList) {
-      // check whether the id of user is added to owners list or not
-      // if not auto add user id to owners list
-      const list = resultList
-        .filter(todo => todo.members.find(member => member.id.valueOf().toString() === id));
-      if (!list) {
-        res.status(401).json({
-          success: false,
-          message: 'You don\'t have any todo list',
-        });
-      } else {
-        res.status(200).json(list);
-      }
+      resultList = resultList.flatMap(list => list.toObject({
+        virtuals: true,
+      }));
+      res.status(200).json(resultList);
     } else {
       res.status(400).json({
         success: false,
@@ -47,7 +39,9 @@ export async function getList(req, res) {
   try {
     const todoList = await listModel.findOne({ _id: listId, 'members.id': id });
     if (todoList) {
-      res.status(200).json(todoList);
+      res.status(200).json(todoList.toObject({
+        virtuals: true,
+      }));
     } else {
       res.status(400).json({
         success: false,
@@ -84,10 +78,11 @@ export async function createList(req, res) {
     tasks, members, name, description, created, isShare, shareToken, lastModified,
   };
   try {
-    console.log(JSON.stringify(list));
     const doc = await listModel.create(list);
     if (doc) {
-      res.status(200).json(doc);
+      res.status(200).json(doc.toObject({
+        virtuals: true,
+      }));
     } else {
       res.status(400).json({
         success: false,
@@ -165,7 +160,12 @@ export async function updateList(req, res) {
       const updated = await doc.save();
 
       if (updated) {
-        res.status(200).json(updated);
+        res.status(200).json(updated.toObject({
+          // because mongoose auto add a id field to the document
+          // by enable virtual option
+          // we can send id field to client
+          virtuals: true,
+        }));
       } else {
         res.status(500).json({
           success: false,

@@ -29,8 +29,13 @@ export async function createTask(req, res) {
 
     if (list) {
       await list.tasks.push(task);
-      const createdDoc = await list.save();
-      res.status(200).json(createdDoc.tasks[createdDoc.tasks.length - 1]);
+      const savedList = await list.save();
+      res.status(200).json(savedList.tasks[savedList.tasks.length - 1].toObject({
+        // because mongoose auto add a id field to the document
+        // by enable virtual option
+        // we can send id field to client
+        virtuals: true,
+      }));
     } else {
       res.status(400).json({
         success: false,
@@ -57,7 +62,12 @@ export async function getTask(req, res) {
     if (doc) {
       const task = await doc.task.id(taskId);
       if (task) {
-        res.status(200).json(task);
+        res.status(200).json(task.toObject({
+          // because mongoose auto add a id field to the document
+          // by enable virtual option
+          // we can send id field to client
+          virtuals: true,
+        }));
       } else {
         res.status(400).json({
           success: false,
@@ -86,8 +96,14 @@ export async function getAllTasks(req, res) {
   // user contain all information of the login user
   const { id } = req.user;
   try {
-    const list = await listModel.findOne({ _id: listId, 'members.id': id });
+    let list = await listModel.findOne({ _id: listId, 'members.id': id });
     if (list) {
+      list = list.toObject({
+        // because mongoose auto add a id field to the document
+        // by enable virtual option
+        // we can send id field to client
+        virtuals: true,
+      });
       res.status(200).json(list.tasks);
     } else {
       res.status(400).json({
@@ -117,7 +133,12 @@ export async function deleleteTask(req, res) {
       if (deleteIndex > -1) {
         const deleted = list.tasks.splice(deleteIndex, 1);
         await list.save();
-        res.status(200).json(deleted);
+        res.status(200).json(deleted.toObject({
+          // because mongoose auto add a id field to the document
+          // by enable virtual option
+          // we can send id field to client
+          virtuals: true,
+        }));
       } else {
         res.status(400).json({
           success: false,
@@ -165,7 +186,12 @@ export async function updateTask(req, res) {
         task.set('priority', priority);
         task.set('repeat', repeat);
         const updatedList = await list.save();
-        res.status(200).json(await updatedList.tasks.id(taskId));
+        res.status(200).json(await updatedList.tasks.id(taskId).toObject({
+          // because mongoose auto add a id field to the document
+          // by enable virtual option
+          // we can send id field to client
+          virtuals: true,
+        }));
       } else {
         res.status(400).json({
           success: false,
