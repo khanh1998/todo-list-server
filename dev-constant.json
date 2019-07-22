@@ -1,6 +1,6 @@
 {
     "MONGO_URL": "mongodb://localhost:27017/TodoList",
     "PORT": 3000,
-    "SECRET":"I LoVe YOU more Than I caN Say :/"
-    
+    "SECRET":"I LoVe YOU more Than I caN Say :/",
+    "HOST": "http://localhost"
 }

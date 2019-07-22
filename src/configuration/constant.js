@@ -17,6 +17,7 @@ const development = {
   MONGO_URL: devConst.MONGO_URL,
   PORT: devConst.PORT,
   SECRET: devConst.SECRET,
+  HOST: `${devConst.HOST}:${devConst.PORT}`,
 };
 
 const test = {
@@ -27,6 +28,7 @@ const production = {
   MONGO_URL: process.env.MONGO_URL,
   SECRET: process.env.SECRET,
   PORT: process.env.PORT,
+  HOST: process.env.HOST,
 };
 
 function getConfiguration(env) {
@@ -46,4 +48,5 @@ export default {
   MONGO_URL: caculated.MONGO_URL,
   SECRET: caculated.SECRET,
   PORT: caculated.PORT,
+  HOST: caculated.HOST,
 };

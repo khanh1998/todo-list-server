@@ -2,10 +2,20 @@ import Passport from 'passport';
 import { ExtractJwt, Strategy as JWTStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import models from './Models';
+import constant from './constant';
+
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies.jwt;
+  }
+  return token;
+};
 
 const options = {
-  secretOrKey: process.env.SECRET,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: constant.SECRET,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // || cookieExtractor(),
+  issuer: constant.HOST,
 };
 const UserModel = models.User;
 export default function () {
