@@ -41,8 +41,7 @@ const User = new Mongoose.Schema({
   },
 });
 
-// eslint-disable-next-line func-names
-User.pre('save', function (next) {
+User.pre('save', function save(next) {
   const user = this;
   if (this.isModified('password') || this.isNew) {
     bcrypt.genSalt(10, (saltError, salt) => {

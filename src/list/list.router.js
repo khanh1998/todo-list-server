@@ -3,8 +3,7 @@ import {
 } from './List.controller';
 
 
-// eslint-disable-next-line import/prefer-default-export
-export const todoListRoute = (app, passport) => {
+export default (app, passport) => {
   const authenticate = (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
       if (err) next(err);

@@ -3,8 +3,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import passportConfigure from './PassportConfiguration';
-import { todoListRoute } from '../list/list.router';
-import { todoItemRoute } from '../task/Task.router';
+import listRoute from '../list/list.router';
+import taskRoute from '../task/Task.router';
 import userRoute from '../user/User.router';
 import loginRoute from '../login/Login.router';
 import './MongooseConfiguration';
@@ -21,7 +21,7 @@ export function ConfigureExpress() {
   app.use(passport.initialize());
   loginRoute(app, passport);
   userRoute(app, passport);
-  todoListRoute(app, passport);
-  todoItemRoute(app, passport);
+  listRoute(app, passport);
+  taskRoute(app, passport);
   return app;
 }

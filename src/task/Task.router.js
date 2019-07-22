@@ -2,8 +2,7 @@ import {
   createTask, deleleteTask, getAllTasks, getTask, updateTask,
 } from './Task.controller';
 
-// eslint-disable-next-line import/prefer-default-export
-export function todoItemRoute(app, passport) {
+export default (app, passport) => {
   const authenticate = (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
       if (err) next(err);
@@ -23,4 +22,4 @@ export function todoItemRoute(app, passport) {
   app.post('/list/:listId/task', authenticate, createTask);
   app.delete('/list/:listId/task/:taskId', authenticate, deleleteTask);
   app.put('/list/:listId/task/:taskId', authenticate, updateTask);
-}
+};
