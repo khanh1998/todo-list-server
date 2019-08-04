@@ -2,6 +2,8 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
+import winston from 'winston';
+import expressWinston from 'express-winston';
 import passportConfigure from './PassportConfiguration';
 import listRoute from '../list/list.router';
 import taskRoute from '../task/Task.router';
@@ -9,8 +11,7 @@ import userRoute from '../user/User.router';
 import loginRoute from '../login/Login.router';
 import './MongooseConfiguration';
 
-// eslint-disable-next-line import/prefer-default-export
-export function ConfigureExpress() {
+export default () => {
   const app = express();
   app.use(helmet());
   app.use(morgan('dev'));
@@ -23,5 +24,14 @@ export function ConfigureExpress() {
   userRoute(app, passport);
   listRoute(app, passport);
   taskRoute(app, passport);
+  app.use(expressWinston.errorLogger({
+    transports: [
+      new winston.transports.Console(),
+    ],
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.json(),
+    ),
+  }));
   return app;
-}
+};

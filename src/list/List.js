@@ -13,6 +13,7 @@ const List = new Mongoose.Schema({
     type: [Task],
   },
   members: {
+    _id: false,
     type: [Member],
     required: [true, 'A to-do list must have at least one owner'],
     validate: {

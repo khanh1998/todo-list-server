@@ -6,7 +6,7 @@ function readJson(fileName) {
   try {
     jsonString = fs.readFileSync(path.resolve(fileName));
   } catch (error) {
-    console.error(error);
+    throw new Error(error.message);
   }
   return JSON.parse(jsonString);
 }

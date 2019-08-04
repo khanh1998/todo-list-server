@@ -1,6 +1,6 @@
 import '@babel/polyfill';
 import http from 'http';
-import { ConfigureExpress } from './configuration/ExpressConfiguration';
+import ConfigureExpress from './configuration/ExpressConfiguration';
 import config from './configuration/constant';
 
 const app = ConfigureExpress();
