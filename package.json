@@ -26,7 +26,7 @@
   "homepage": "https://github.com/khanh1998/todo-list-server#readme",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
